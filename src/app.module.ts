@@ -1,28 +1,32 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
-import { User } from './entities/user.entity';
-import { UserService } from './services/user.service';
-import { UserController } from './controllers/user.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from './modules/auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Docente, DocenteSchema } from './modules/docente/docente.schema';
+import { Alumno, AlumnoSchema } from './modules/alumno/alumno.schema';
+import { Carrera, CarreraSchema } from './modules/carrera/carrera.schema';
+import { DocenteController } from './modules/docente/docente.controller';
+import { AlumnoController } from './modules/alumno/alumno.controller';
+import { CarreraController } from './modules/carrera/carrera.controller';
+import { DocenteService } from './modules/docente/docente.service';
+import { AlumnoService } from './modules/alumno/alumno.service';
+import { CarreraService } from './modules/carrera/carrera.service';
+import { getEnvValue } from './config/config.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: '127.0.0.1',
-      port: 5432,
-      username: 'postgres',
-      password: '1234',
-      database: 'postgres',
-      entities: [User],
-      synchronize: true,
-    }),
-    TypeOrmModule.forFeature([User]), // Registra el repositorio aquí
+    MongooseModule.forRoot(
+      `mongodb://${getEnvValue('DATABASE_HOST')}:${getEnvValue('DATABASE_PORT')}/${getEnvValue('DATABASE_NAME')}`
+    ),
+    MongooseModule.forFeature([
+      { name: Docente.name, schema: DocenteSchema },
+      { name: Alumno.name, schema: AlumnoSchema },
+      { name: Carrera.name, schema: CarreraSchema },
+    ]),
     AuthModule,
   ],
-  controllers: [AppController, UserController],
-  providers: [AppService, UserService],
+  controllers: [AppController, DocenteController, AlumnoController, CarreraController],
+  providers: [AppService, DocenteService, AlumnoService, CarreraService],
 })
 export class AppModule {}
