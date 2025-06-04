@@ -23,6 +23,9 @@ export class Docente {
 
   @Prop({ required: true, unique: true })
   email: string;
+
+  @Prop({ default: true })
+  activo: boolean;
 }
 
 export const DocenteSchema = SchemaFactory.createForClass(Docente);

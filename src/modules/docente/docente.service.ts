@@ -15,7 +15,7 @@ export class DocenteService {
   }
 
   async findAll(): Promise<Docente[]> {
-    return this.docenteModel.find().exec();
+    return this.docenteModel.find({ activo: true }).exec();
   }
 
   async findByRut(rut: string) {

@@ -29,6 +29,9 @@ export class Alumno {
 
   @Prop({ required: true })
   año_ingreso: number;
+
+  @Prop({ default: true })
+  activo: boolean;
 }
 
 export const AlumnoSchema = SchemaFactory.createForClass(Alumno);

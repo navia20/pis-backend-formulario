@@ -10,9 +10,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Alumno, AlumnoSchema } from '../alumno/alumno.schema';
 import { Docente, DocenteSchema } from '../docente/docente.schema';
 import { getEnvValue } from '../../config/config.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule,
     PassportModule,
     JwtModule.register({
       secret: getEnvValue('JWT_SECRET'),

@@ -20,10 +20,14 @@ export class AlumnoService {
   }
 
   async findAll(): Promise<Alumno[]> {
-    return this.alumnoModel.find().exec();
+    return this.alumnoModel.find({ activo: true }).exec();
   }
 
   async findByRut(rut: string) {
     return this.alumnoModel.findOne({ rut }).exec();
+  }
+
+  async softDelete(id: string): Promise<Alumno | null> {
+    return this.alumnoModel.findOneAndUpdate({ id }, { activo: false }, { new: true }).exec();
   }
 }
