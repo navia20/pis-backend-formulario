@@ -1,0 +1,56 @@
+services:
+  # Base de datos MongoDB
+  mongodb:
+    image: mongo:7.0
+    container_name: pis-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: pis_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - pis-network
+
+  # Backend NestJS
+  backend:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: pis-backend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=mongodb://admin:password123@mongodb:27017/pis_db?authSource=admin
+      - JWT_SECRET=tu_jwt_secret_muy_seguro_aqui
+      - DATABASE_TYPE=mongodb
+      - DATABASE_HOST=mongodb
+      - DATABASE_PORT=27017
+      - DATABASE_USERNAME=
+      - DATABASE_PASSWORD=
+      - DATABASE_NAME=pis_db
+      - JWT_ALG=HS256
+      - JWT_EXP=1d
+      - SECRET_SALT=521363494d1e21eff6aa645edd8cdfa5bdb30de3e13d65cf62a217973871c4e0
+      - SALT_ROUNDS=10
+      - EMAIL_USER=tu_email@gmail.com
+      - EMAIL_PASSWORD=tu_password_de_aplicacion_gmail
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    networks:
+      - pis-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  pis-network:
+    driver: bridge
