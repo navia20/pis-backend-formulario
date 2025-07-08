@@ -21,4 +21,17 @@ export class AlumnoController {
   async findByRut(@Param('rut') rut: string) {
     return this.alumnoService.findByRut(rut);
   }
+
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    console.log('Controller: Buscando alumno con ID:', id);
+    try {
+      const alumno = await this.alumnoService.findById(id);
+      console.log('Controller: Alumno encontrado:', alumno ? 'Sí' : 'No');
+      return alumno;
+    } catch (error) {
+      console.error('Controller: Error al buscar alumno:', error);
+      throw error;
+    }
+  }
 }

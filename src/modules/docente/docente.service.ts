@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Docente, DocenteDocument } from './docente.schema';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class DocenteService {
@@ -10,6 +11,10 @@ export class DocenteService {
   ) {}
 
   async create(docente: Partial<Docente>): Promise<Docente> {
+    if (docente.contraseña) {
+      const salt = await bcrypt.genSalt();
+      docente.contraseña = await bcrypt.hash(docente.contraseña, salt);
+    }
     const createdDocente = new this.docenteModel(docente);
     return createdDocente.save();
   }
